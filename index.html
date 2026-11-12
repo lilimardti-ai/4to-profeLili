@@ -161,7 +161,7 @@ const okU=u=>/^(https:\/\/|\/_blob\/)/.test(u||'');
 const prog=()=>({nivel:lvl()||'',est:stars,retos:Object.keys(done).length});
 function showLg(){$('#lg').style.display='flex'}
 function setUs(){const b=$('#us');b.style.display=ME&&!TCH?'':'none';if(ME)b.textContent='👤 '+ME.a+', '+ME.n}
-function sync(){if(!db||!uid||!ME||TCH||!ready)return;mine={...(mine||{}),a:ME.a,n:ME.n,...prog()};db.doc('trabajos/'+uid).set(strip(mine),{merge:true}).catch(()=>{})}
+function sync(){if(!db||!uid||!ME||TCH||!ready)return;mine={...(mine||{}),a:ME.a,n:ME.n,...prog()};db.doc('trabajos/'+uid).set(strip(mine),{merge:true}).catch(e=>toast('No se guardó en Firebase: '+(e.code||e.message)))}
 $('#us').onclick=()=>{try{localStorage.removeItem('sb_me')}catch(e){}(auth?auth.signOut():Promise.resolve()).then(()=>location.reload())};
 $('#lgb').onclick=()=>{const a=$('#la').value.trim(),n=$('#ln').value.trim();if(a.length<2||n.length<2){toast('Escribe tus apellidos y nombres');return}ME={a,n};try{localStorage.setItem('sb_me',JSON.stringify(ME))}catch(e){}$('#lg').style.display='none';setUs();sfx('ok');sync();if(P[cur].k=='f'||P[cur].k=='w')render()};
 function loadMine(){db.doc('trabajos/'+uid).get().then(s=>{if(s.exists)mine=s.data()}).catch(()=>{}).then(()=>{ready=true;if(ME&&!mine)sync();if(P[cur].k=='w')wInit()})}
